@@ -1,19 +1,99 @@
+/* src/App.css */
 .App {
   text-align: center;
-  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: #4a90e2;
+  padding: 20px 0;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+main {
+  flex: 1;
+  padding: 40px 20px;
+}
+
+section {
+  background-color: white;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+  margin-top: 0;
+  color: #333;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
+  color: white;
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.room-section {
-  margin-top: 20px;
+button:disabled {
+  background-color: #a0c4e8;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
+  background-color: #357ab8;
+}
+
+a {
+  color: #4a90e2;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 .error {
-  color: red;
-  margin-top: 10px;
+  color: #e74c3c;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+footer {
+  background-color: #f1f2f6;
+  padding: 15px 0;
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  main {
+    padding: 20px 10px;
+  }
+
+  section {
+    padding: 20px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+  }
 }
