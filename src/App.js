@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
@@ -6,8 +7,7 @@ import MyComponent from './components/MyComponent';
 const apiKey = process.env.REACT_APP_WHEREBY_API_KEY;
 
 function App() {
-  const [hostRoomUrl, setHostRoomUrl] = useState('');
-  const [participantRoomUrl, setParticipantRoomUrl] = useState('');
+  const [roomUrl, setRoomUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,9 +17,10 @@ function App() {
 
     try {
       const body = {
-        // Define room properties as needed
         endDate: "2024-09-21T20:31:09.102Z",
-        fields:["hostRoomUrl"]
+        fields: ["roomUrl"],
+        roomMode: "normal", // One-to-one call
+        participantLimit: 2, // Limit to 2 participants
       };
       const response = await axios.post(
         'https://api.whereby.dev/v1/meetings',
@@ -31,13 +32,11 @@ function App() {
           },
         }
       );
-      console.log("Response:", response.data);
 
-      const { roomUrl, hostRoomUrl } = response.data;
-      setParticipantRoomUrl(roomUrl);
-      setHostRoomUrl(hostRoomUrl);
-      console.log('Participant Room URL:', roomUrl);
-      console.log('Host Room URL:', hostRoomUrl);
+      const { roomUrl } = response.data;
+      setRoomUrl(roomUrl);
+      window.location.href = roomUrl;
+      console.log('Room URL:', roomUrl);
     } catch (err) {
       console.error('Error creating room:', err);
       setError('Failed to create room. Please try again.');
@@ -46,61 +45,30 @@ function App() {
     }
   };
 
-  const joinParticipant = () => {
-    if (!participantRoomUrl) {
-      setError('No room available to join. Please create a room first.');
-      return;
-    }
-    // Logic to join as participant can be handled here
-    // For example, redirect or show participant embed
-  };
-
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(participantRoomUrl)
-      .then(() => {
-        alert('Copied to clipboard!');
-      })
-      .catch((error) => {
-        console.error('Failed to copy the URL:', error);
-      });
-  };
-
   return (
     <div className="App">
       <header>
-        <h1>Hitch Hatch! connect with your partner</h1>
+        <h1>Hitch Hatch! Connect with your partner</h1>
       </header>
 
       <main>
         <section className="create-room-section">
-          <h2>Create a New Meeting</h2>
           <button onClick={createRoom} disabled={loading}>
-            {loading ? 'Creating Room...' : 'Create Room'}
+            {loading ? 'Creating Room...' : 'Start'}
           </button>
           {error && <p className="error">{error}</p>}
         </section>
 
-        {hostRoomUrl && (
-          <section className="host-section">
-            <h2>Host View</h2>
-            <p>
-              Share this URL with participants to join the meeting:
-              <br />
-              <button onClick={handleCopyToClipboard}>
-              copy
-            </button>
-            </p>
+        {roomUrl && (
+          <section className="room-section">
             <MyComponent
-              roomUrl={hostRoomUrl}
-              role="host"
-              apiKey={apiKey}
+              roomUrl={roomUrl}
               onApiReady={(api) => {
-                console.log('Whereby API Ready (Host)', api);
+                console.log('Whereby API Ready', api);
               }}
               onRoomLeft={() => {
-                console.log('Host left the room');
-                setHostRoomUrl('');
-                setParticipantRoomUrl('');
+                console.log('Left the room');
+                setRoomUrl('');
               }}
             />
           </section>
